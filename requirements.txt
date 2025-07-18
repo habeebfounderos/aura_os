@@ -9,3 +9,5 @@ torchvision
 lxml
 pandas
 pyarrow
+Flask-SQLAlchemy
+Werkzeug
