@@ -1,0 +1,9 @@
+# Create a new Git repository
+cd aura_os/inference_api/aura_os_api
+git init
+git add .
+git commit -m "Initial AURA OS deployment"
+   
+# Push to GitHub (create repository first)
+git remote add origin https://github.com/habeebfounderos/aura-os.git
+git push -u origin main
