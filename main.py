@@ -1,7 +1,8 @@
 import os
 import sys
-# DON'T CHANGE THIS !!!
-sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
+
+# Add the 'app' directory to the Python path
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'app'))
 
 from flask import Flask, send_from_directory
 from flask_cors import CORS
