@@ -1,8 +1,9 @@
 import os
 import sys
 
-# Add the 'app' directory to the Python path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'app'))
+# The 'src' directory is now directly next to main.py, so no special path manipulation is needed.
+# Remove or comment out the sys.path.insert line that was trying to add 'app' to the path.
+# sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'app')) # REMOVE OR COMMENT THIS LINE
 
 from flask import Flask, send_from_directory
 from flask_cors import CORS
@@ -10,7 +11,7 @@ from src.models.user import db
 from src.routes.user import user_bp
 from src.routes.floor_plan import floor_plan_bp
 
-app = Flask(__name__, static_folder=os.path.join(os.path.dirname(__file__), 'app', 'src', 'static'))
+app = Flask(__name__, static_folder=os.path.join(os.path.dirname(__file__), 'src', 'static')) # CORRECTED PATH
 app.config['SECRET_KEY'] = 'asdf#FGSgvasgf$5$WGT'
 
 # Enable CORS for all routes
