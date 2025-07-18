@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AURA OS - AI Architect</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-size: 2.5em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #fff;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .dimensions-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .rooms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .room-checkbox {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .room-checkbox:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+
+        .room-checkbox input[type="checkbox"] {
+            width: auto;
+            margin-right: 8px;
+        }
+
+        .generate-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .generate-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: #fee;
+            color: #c33;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .success {
+            background: #efe;
+            color: #363;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 20px;
+            }
+
+            .logo {
+                font-size: 2em;
+            }
+
+            .dimensions-group {
+                grid-template-columns: 1fr;
+            }
+
+            .rooms-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">AURA OS</div>
+            <div class="subtitle">World's Smartest AI Architect</div>
+            <p>Design your dream bungalow with AI-powered floor plan generation</p>
+        </div>
+
+        <form id="floorPlanForm">
+            <div class="form-group">
+                <label for="prompt">Describe Your Dream Home</label>
+                <textarea 
+                    id="prompt" 
+                    name="prompt" 
+                    placeholder="e.g., Modern 3-bedroom bungalow with open kitchen, large living area, and covered patio..."
+                    required
+                ></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Site Dimensions (meters)</label>
+                <div class="dimensions-group">
+                    <div>
+                        <input 
+                            type="number" 
+                            id="site_width" 
+                            name="site_width" 
+                            placeholder="Width (m)" 
+                            min="10" 
+                            max="100" 
+                            value="25"
+                            required
+                        >
+                    </div>
+                    <div>
+                        <input 
+                            type="number" 
+                            id="site_height" 
+                            name="site_height" 
+                            placeholder="Height (m)" 
+                            min="10" 
+                            max="100" 
+                            value="35"
+                            required
+                        >
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Required Rooms</label>
+                <div class="rooms-grid">
+                    <label class="room-checkbox">
+                        <input type="checkbox" name="required_rooms" value="living_room" checked>
+                        Living Room
+                    </label>
+                    <label class="room-checkbox">
+                        <input type="checkbox" name="required_rooms" value="kitchen" checked>
+                        Kitchen
+                    </label>
+                    <label class="room-checkbox">
+                        <input type="checkbox" name="required_rooms" value="bedroom" checked>
+                        Bedroom
+                    </label>
+                    <label class="room-checkbox">
+                        <input type="checkbox" name="required_rooms" value="bathroom" checked>
+                        Bathroom
+                    </label>
+                    <label class="room-checkbox">
+                        <input type="checkbox" name="required_rooms" value="garage">
+                        Garage
+                    </label>
+                    <label class="room-checkbox">
+                        <input type="checkbox" name="required_rooms" value="study">
+                        Study
+                    </label>
+                    <label class="room-checkbox">
+                        <input type="checkbox" name="required_rooms" value="laundry">
+                        Laundry
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="climate_zone">Climate Zone</label>
+                <select id="climate_zone" name="climate_zone" required>
+                    <option value="temperate">Temperate</option>
+                    <option value="tropical">Tropical</option>
+                    <option value="cold">Cold</option>
+                    <option value="arid">Arid</option>
+                    <option value="mediterranean">Mediterranean</option>
+                </select>
+            </div>
+
+            <button type="submit" class="generate-btn" id="generateBtn">
+                Generate Floor Plan
+            </button>
+        </form>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Generating your floor plan...</p>
+        </div>
+
+        <div class="error" id="error"></div>
+        <div class="success" id="success"></div>
+    </div>
+
+    <script>
+        document.getElementById('floorPlanForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const form = e.target;
+            const formData = new FormData(form);
+            const generateBtn = document.getElementById('generateBtn');
+            const loading = document.getElementById('loading');
+            const error = document.getElementById('error');
+            const success = document.getElementById('success');
+            
+            // Hide previous messages
+            error.style.display = 'none';
+            success.style.display = 'none';
+            
+            // Show loading
+            generateBtn.disabled = true;
+            loading.style.display = 'block';
+            
+            try {
+                // Collect form data
+                const data = {
+                    prompt: formData.get('prompt'),
+                    site_width: parseInt(formData.get('site_width')),
+                    site_height: parseInt(formData.get('site_height')),
+                    required_rooms: formData.getAll('required_rooms'),
+                    climate_zone: formData.get('climate_zone')
+                };
+                
+                // Validate required rooms
+                if (data.required_rooms.length === 0) {
+                    throw new Error('Please select at least one required room.');
+                }
+                
+                // Make API request
+                const response = await fetch('/api/floor-plan/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to generate floor plan');
+                }
+                
+                // Download the file
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = `floor_plan_${new Date().toISOString().slice(0,19).replace(/:/g, '-')}.zip`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+                
+                // Show success message
+                success.textContent = 'Floor plan generated successfully! Download started.';
+                success.style.display = 'block';
+                
+            } catch (err) {
+                console.error('Error:', err);
+                error.textContent = err.message || 'An error occurred while generating the floor plan.';
+                error.style.display = 'block';
+            } finally {
+                // Hide loading
+                loading.style.display = 'none';
+                generateBtn.disabled = false;
+            }
+        });
+        
+        // Add some interactive feedback
+        document.querySelectorAll('input, textarea, select').forEach(element => {
+            element.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'scale(1.02)';
+            });
+            
+            element.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'scale(1)';
+            });
+        });
+    </script>
+</body>
+</html>
