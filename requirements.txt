@@ -1,5 +1,14 @@
-flask
+Flask
+Flask-Cors
+ezdxf
+Pillow
+numpy
 gunicorn
+torch
+torchvision
+lxml
+pandas
+pyarrow
 fastapi
 uvicorn
 pydantic
