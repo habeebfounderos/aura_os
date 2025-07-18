@@ -1,8 +1,9 @@
 import os
 import sys
 
-# Add the 'app' directory to the Python path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'app'))
+# Add the directory containing 'src' to the Python path
+# Since 'main.py' and 'src' are at the same level, we add the current directory.
+sys.path.insert(0, os.path.dirname(__file__))
 
 from flask import Flask, send_from_directory
 from flask_cors import CORS
@@ -10,7 +11,7 @@ from src.models.user import db
 from src.routes.user import user_bp
 from src.routes.floor_plan import floor_plan_bp
 
-app = Flask(__name__, static_folder=os.path.join(os.path.dirname(__file__), 'app', 'src', 'static'))
+app = Flask(__name__, static_folder=os.path.join(os.path.dirname(__file__), 'src', 'static'))
 app.config['SECRET_KEY'] = 'asdf#FGSgvasgf$5$WGT'
 
 # Enable CORS for all routes
@@ -19,7 +20,7 @@ CORS(app)
 app.register_blueprint(user_bp, url_prefix='/api')
 app.register_blueprint(floor_plan_bp, url_prefix='/api/floor-plan')
 
-# uncomment if you need to use database
+# Database configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(os.path.dirname(__file__), 'database', 'app.db')}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
@@ -44,5 +45,6 @@ def serve(path):
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
-
+    # Render.com uses the PORT environment variable
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)
