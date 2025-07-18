@@ -9,8 +9,3 @@ torchvision
 lxml
 pandas
 pyarrow
-fastapi
-uvicorn
-pydantic
-numpy
-torch
