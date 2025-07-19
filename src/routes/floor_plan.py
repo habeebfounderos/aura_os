@@ -134,12 +134,17 @@ def generate_dwg_file(floor_plan_data, output_path):
             (x, y), (x + w, y), (x + w, y + h), (x, y + h), (x, y)
         ])
         
-        # Room label
+                # Room label
+        # For newer ezdxf versions, set_pos is not directly on the Text object
+        # Instead, you can set the insert point directly in dxfattribs
         msp.add_text(
-            room['name'],
-            dxfattribs={'height': 0.5}
-        ).set_pos((x + w/2, y + h/2))
-    
+            room["name"],
+            dxfattribs={
+                "height": 0.5,
+                "insert": (x + w/2, y + h/2) # Use 'insert' for position
+            }
+        )
+ 
     doc.saveas(output_path)
 
 def generate_ifc_file(floor_plan_data, output_path):
