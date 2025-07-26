@@ -5,6 +5,7 @@ Pillow
 numpy
 gunicorn
 torch
+gdown
 torchvision
 lxml
 pandas
