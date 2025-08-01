@@ -11,7 +11,7 @@ if not model_path.exists():
     print("Downloading trained_model.pth from Google Drive...")
     import gdown
 
-    file_id = "1_ORgdQmEcjZ_10-DdK_Hw3cOzgGD1g5v"
+    file_id = "1KPgFgEFANOMWVpS7IZ3Fb53lZ8jhlmkF"
     url = f"https://drive.google.com/uc?id={file_id}"
 
     model_path.parent.mkdir(parents=True, exist_ok=True)
